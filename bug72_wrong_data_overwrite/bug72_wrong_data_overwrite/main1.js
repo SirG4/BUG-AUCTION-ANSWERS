@@ -1,21 +1,24 @@
-function main() {
+// Debugged JavaScript Code - Fixed data overwrite bug
+
+function run() {
     let data = [];
-    for (let i = 0n; i < 10n; i++) data.push(0xBBBBn * (i + 1n));
+    for (let i = 0; i < 10; i++)
+        data.push(BigInt(i + 1));
 
     let acc = 0n;
+    let mask = 0xFFFFFFFFFFFFFFFFn;
+    let CONST = 0x9E3779B97F4A7C15n;
 
-    for (let j = 0; j < 10; j++) {
-        let i = BigInt(j);
-
-        // FIX: removed overwrite of data[j]
-        acc ^= data[j] * (i + 1n);
-
-        acc = (acc * 0x9E3779B97F4A7C15n) & 0xFFFFFFFFFFFFFFFFn;
-        acc = ((acc << (i % 11n + 1n)) | (acc >> (63n - i % 11n))) & 0xFFFFFFFFFFFFFFFFn;
+    for (let i = 0; i < 10; i++) {
+        // FIX: use temp variable
+        let val = data[i] * BigInt(i + 1);
+        acc ^= val;
+        acc = (acc * CONST) & mask;
+        let r = BigInt(i % 5 + 1);
+        acc = ((acc << r) | (acc >> (63n - BigInt(i % 5)))) & mask;
     }
 
-    // FIX: print result
-    console.log("Result:", acc.toString(16));
+    console.log("0x" + acc.toString(16));
 }
 
-main();
+run();

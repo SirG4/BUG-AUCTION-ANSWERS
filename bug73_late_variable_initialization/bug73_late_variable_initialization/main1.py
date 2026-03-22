@@ -1,15 +1,36 @@
+# Debugged Code - Fixed late variable initialization
+# The bug: accumulator was being initialized inside the loop
+# Fix: initialize acc BEFORE the loop
+
+def ror(x, r):
+    # 64-bit rotate right
+    return ((x >> r) | (x << (64 - r))) & 0xFFFFFFFFFFFFFFFF
+
 def run():
-    data = [0xBBBB * (i + 1) for i in range(10)]
+    data = list(range(20))
+    mask = 0xFFFFFFFFFFFFFFFF
+    CONST = 0x9E3779B97F4A7C15
 
-    # FIX: initialize acc before loop (was missing or misplaced)
-    acc = 0
+    acc = 0          # FIX: must be initialized before loop
+    step = 0         # iteration counter for rotation
 
-    for i in range(len(data)):
-        acc ^= data[i] * (i + 1)
-        acc = (acc * 0x9E3779B97F4A7C15) & 0xFFFFFFFFFFFFFFFF
-        acc = ((acc << (i % 11 + 1)) | (acc >> (63 - i % 11))) & 0xFFFFFFFFFFFFFFFF
+    for i in range(0, len(data), 2):
+        # Multiply and keep within 64-bit
+        val = (data[i] * CONST) & mask
 
-    # FIX: print result
-    print("Result:", hex(acc))
+        # XOR into accumulator
+        acc ^= val
+
+        # Rotation amount depends on iteration count, not index
+        r = (step % 9) + 1
+
+        # Rotate right 64-bit
+        acc = ror(acc, r)
+
+        step += 1
+
+    # Output must be string (hex string)
+    result = hex(acc)
+    print(result)
 
 run()

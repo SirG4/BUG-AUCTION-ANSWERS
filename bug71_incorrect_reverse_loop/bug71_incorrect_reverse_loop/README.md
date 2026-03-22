@@ -3,4 +3,13 @@
 **Hint:** Incorrect reverse loop.
 Bug:
 
-0x3d8bdfa7a776fb3d
+Reverse loop skipped first element (i > 0)
+Index 0 was never processed
+
+Fix:
+
+Changed condition to:
+i >= 0
+Python: range(len(data)-1, -1, -1)
+Terminal Output:
+Result: 23ada46cde3fbb42

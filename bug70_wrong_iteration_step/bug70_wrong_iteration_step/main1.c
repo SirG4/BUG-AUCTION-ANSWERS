@@ -1,20 +1,22 @@
+// Debugged C Code - Outputs hex string
+
 #include <stdio.h>
+#include <stdint.h>
 
 int main() {
-    unsigned long long data[10];
-    for (int i = 0; i < 10; i++) data[i] = 0xBBBBULL * (i + 1);
+    uint64_t acc = 0;
+    int data[20];
 
-    unsigned long long acc = 0;
+    for(int i = 0; i < 20; i++)
+        data[i] = i;
 
-    // FIX: changed i += 2 → i++ (was skipping elements)
-    for (int i = 0; i < 10; i++) {
-        acc ^= data[i] * (i + 1);
-        acc = acc * 0x9E3779B97F4A7C15ULL;
-        acc = ((acc << (i % 11 + 1)) | (acc >> (63 - i % 11)));
+    // FIXED step = 2
+    for(int i = 0; i < 20; i += 2) {
+        acc ^= (uint64_t)data[i] * 0x9E3779B97F4A7C15ULL;
+        acc &= 0xFFFFFFFFFFFFFFFFULL;
+        acc = ((acc << (i % 9 + 1)) | (acc >> (63 - i % 9))) & 0xFFFFFFFFFFFFFFFFULL;
     }
 
-    // FIX: print computed result
-    printf("Result: %llx\n", acc);
-
+    printf("0x%llx\n", acc);  // print as string
     return 0;
 }

@@ -1,19 +1,22 @@
-function main() {
+// Debugged JavaScript Code - Outputs hex string
+
+function run() {
     let data = [];
-    for (let i = 0n; i < 10n; i++) data.push(0xBBBBn * (i + 1n));
+    for (let i = 0; i < 20; i++) data.push(BigInt(i));
 
     let acc = 0n;
+    let mask = 0xFFFFFFFFFFFFFFFFn;
 
-    // FIX: changed j += 2 → j++ (was skipping elements)
-    for (let j = 0; j < 10; j++) {
-        let i = BigInt(j);
-        acc ^= data[j] * (i + 1n);
-        acc = (acc * 0x9E3779B97F4A7C15n) & 0xFFFFFFFFFFFFFFFFn;
-        acc = ((acc << (i % 11n + 1n)) | (acc >> (63n - i % 11n))) & 0xFFFFFFFFFFFFFFFFn;
+    // FIX: step = 2
+    for (let i = 0; i < data.length; i += 2) {
+        acc ^= data[i] * 0x9E3779B97F4A7C15n;
+        acc &= mask;
+
+        let shift = BigInt(i % 9 + 1);
+        acc = ((acc << shift) | (acc >> (63n - BigInt(i % 9)))) & mask;
     }
 
-    // FIX: print result
-    console.log("Result:", acc.toString(16));
+    console.log("0x" + acc.toString(16));
 }
 
-main();
+run();

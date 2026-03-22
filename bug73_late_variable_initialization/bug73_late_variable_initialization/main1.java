@@ -1,18 +1,30 @@
 public class main1 {
+
+    static long ror(long x, int r) {
+        return (x >>> r) | (x << (64 - r));
+    }
+
     public static void main(String[] args) {
-        long[] data = new long[10];
-        for (int i = 0; i < 10; i++) data[i] = 0xBBBBL * (i + 1);
+        long CONST = 0x9E3779B97F4A7C15L;
+        long mask = 0xFFFFFFFFFFFFFFFFL;
 
-        // FIX: initialize acc (Java sometimes defaults to 0, but explicit is correct)
         long acc = 0;
+        int step = 0;
 
-        for (int i = 0; i < 10; i++) {
-            acc ^= data[i] * (i + 1);
-            acc = acc * 0x9E3779B97F4A7C15L;
-            acc = ((acc << (i % 11 + 1)) | (acc >>> (63 - (i % 11))));
+        long[] data = new long[20];
+        for (int i = 0; i < 20; i++)
+            data[i] = i;
+
+        for (int i = 0; i < 20; i += 2) {
+            long val = (data[i] * CONST) & mask;
+            acc ^= val;
+
+            int r = (step % 9) + 1;
+            acc = ror(acc, r) & mask;
+
+            step++;
         }
 
-        // FIX: print result
-        System.out.println("Result: " + Long.toHexString(acc));
+        System.out.println("0x" + Long.toHexString(acc));
     }
 }

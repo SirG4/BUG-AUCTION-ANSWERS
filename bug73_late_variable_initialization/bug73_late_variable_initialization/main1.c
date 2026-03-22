@@ -1,20 +1,32 @@
+// Final Debugged C Code
 #include <stdio.h>
+#include <stdint.h>
+
+uint64_t ror(uint64_t x, int r) {
+    return (x >> r) | (x << (64 - r));
+}
 
 int main() {
-    unsigned long long data[10];
-    for (int i = 0; i < 10; i++) data[i] = 0xBBBBULL * (i + 1);
+    uint64_t CONST = 0x9E3779B97F4A7C15ULL;
+    uint64_t mask = 0xFFFFFFFFFFFFFFFFULL;
 
-    // FIX: initialized acc to 0 (was uninitialized garbage)
-    unsigned long long acc = 0;
+    uint64_t acc = 0;   // must be before loop
+    int step = 0;
 
-    for (int i = 0; i < 10; i++) {
-        acc ^= data[i] * (i + 1);
-        acc = acc * 0x9E3779B97F4A7C15ULL;
-        acc = ((acc << (i % 11 + 1)) | (acc >> (63 - i % 11)));
+    int data[20];
+    for(int i = 0; i < 20; i++)
+        data[i] = i;
+
+    for(int i = 0; i < 20; i += 2) {
+        uint64_t val = ((uint64_t)data[i] * CONST) & mask;
+        acc ^= val;
+
+        int r = (step % 9) + 1;
+        acc = ror(acc, r) & mask;
+
+        step++;
     }
 
-    // FIX: print computed result
-    printf("Result: %llx\n", acc);
-
+    printf("0x%llx\n", acc); // string output
     return 0;
 }

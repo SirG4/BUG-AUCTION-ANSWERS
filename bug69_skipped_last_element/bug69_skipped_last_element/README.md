@@ -12,4 +12,4 @@ Changed loop condition to include full range:
 i < 10
 range(len(data))
 Terminal Output:
-Result: 0x23ada46cde3fbb42
+Result: 23ada46cde3fbb42

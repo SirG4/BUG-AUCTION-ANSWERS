@@ -13,4 +13,4 @@ i++ (C/C++/Java)
 range(len(data)) (Python)
 j++ (JavaScript)
 Terminal Output:
-Result: 23ada46cde3fbb42
+Result: 0xb7350d926cce6168

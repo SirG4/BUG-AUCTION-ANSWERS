@@ -1,21 +1,22 @@
 #include <iostream>
-#include <iomanip>
+#include <cstdint>
+using namespace std;
 
 int main() {
-    unsigned long long data[10];
-    for (int i = 0; i < 10; i++) data[i] = 0xBBBBULL * (i + 1);
+    uint64_t data[10];
+    for(int i = 0; i < 10; i++)
+        data[i] = 0x100 * (i + 1);
 
-    unsigned long long acc = 0;
+    uint64_t acc = 0;
+    uint64_t mask = 0xFFFFFFFFFFFFFFFFULL;
 
-    // FIX: changed i > 0 → i >= 0
-    for (int i = 9; i >= 0; i--) {
+    // FIX: include index 0
+    for(int i = 9; i >= 0; i--) {
         acc ^= data[i] * (i + 1);
-        acc = acc * 0x9E3779B97F4A7C15ULL;
-        acc = ((acc << (i % 11 + 1)) | (acc >> (63 - i % 11)));
+        acc = (acc * 0x9E3779B97F4A7C15ULL) & mask;
+        acc = ((acc << (i % 7 + 1)) | (acc >> (63 - i % 7))) & mask;
     }
 
-    // FIX: print result
-    std::cout << "Result: " << std::hex << acc << std::endl;
-
+    cout << "0x" << hex << acc << endl;
     return 0;
 }

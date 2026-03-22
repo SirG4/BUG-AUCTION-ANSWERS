@@ -13,4 +13,4 @@ Initialized properly:
 
 acc = 0
 Terminal Output:
-Result: 23ada46cde3fbb42
+Result: 0x6cd2d4b9c959a82

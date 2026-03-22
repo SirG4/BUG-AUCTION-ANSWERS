@@ -1,19 +1,23 @@
-function main() {
+// Debugged JavaScript Code - Reverse loop fixed
+
+function run() {
     let data = [];
-    for (let i = 0n; i < 10n; i++) data.push(0xBBBBn * (i + 1n));
+    for (let i = 0; i < 10; i++)
+        data.push(BigInt(0x100 * (i + 1)));
 
     let acc = 0n;
+    let mask = 0xFFFFFFFFFFFFFFFFn;
+    let CONST = 0x9E3779B97F4A7C15n;
 
-    // FIX: changed j > 0 → j >= 0
-    for (let j = 9; j >= 0; j--) {
-        let i = BigInt(j);
-        acc ^= data[j] * (i + 1n);
-        acc = (acc * 0x9E3779B97F4A7C15n) & 0xFFFFFFFFFFFFFFFFn;
-        acc = ((acc << (i % 11n + 1n)) | (acc >> (63n - i % 11n))) & 0xFFFFFFFFFFFFFFFFn;
+    // FIX: include index 0
+    for (let i = 9; i >= 0; i--) {
+        acc ^= data[i] * BigInt(i + 1);
+        acc = (acc * CONST) & mask;
+        let r = BigInt(i % 7 + 1);
+        acc = ((acc << r) | (acc >> (63n - BigInt(i % 7)))) & mask;
     }
 
-    // FIX: print result
-    console.log("Result:", acc.toString(16));
+    console.log("0x" + acc.toString(16));
 }
 
-main();
+run();
